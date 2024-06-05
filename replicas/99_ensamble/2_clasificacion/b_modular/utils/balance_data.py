@@ -58,7 +58,6 @@ class Undersampler:
     """
     Clase que proporciona una interfaz para aplicar técnicas de submuestreo.
 
-
     Métodos:
     - 'random': Submuestreo aleatorio.
     - 'nearmiss': Selección de ejemplos de la clase mayoritaria que están más cerca de la clase minoritaria.
