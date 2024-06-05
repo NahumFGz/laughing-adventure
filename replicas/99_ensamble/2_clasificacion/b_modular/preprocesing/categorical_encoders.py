@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 
 
-class Categorical:
+class CategoricalEncoders:
 
     def __init__(self, dataset):
         self.dataset = dataset
@@ -119,3 +119,101 @@ class Categorical:
         data_encoded = encoder.fit_transform(data)
 
         return data_encoded
+
+    def frequency_encoder(self, binary_columns, categorical_columns):
+        """
+        Aplicar Frequency Encoding a las columnas categóricas.
+
+        Args:
+            binary_columns (list): Lista de columnas binarias.
+            categorical_columns (list): Lista de columnas categóricas.
+
+        Returns:
+            DataFrame: El DataFrame con las columnas categóricas codificadas usando Frequency Encoding.
+        """
+        data = self.dataset.copy()
+        data = self._map_binary_columns(data, binary_columns)
+
+        # Aplicar Frequency Encoding a las columnas categóricas
+        for col in categorical_columns:
+            frequency = data[col].value_counts(normalize=True)
+            data[col] = data[col].map(frequency)
+
+        return data
+
+    def binary_encoder(self, binary_columns, categorical_columns):
+        """
+        Aplicar Binary Encoding a las columnas categóricas.
+
+        Args:
+            binary_columns (list): Lista de columnas binarias.
+            categorical_columns (list): Lista de columnas categóricas.
+
+        Returns:
+            DataFrame: El DataFrame con las columnas categóricas codificadas usando Binary Encoding.
+        """
+        data = self.dataset.copy()
+        data = self._map_binary_columns(data, binary_columns)
+
+        # Aplicar Binary Encoding a las columnas categóricas
+        encoder = ce.BinaryEncoder(cols=categorical_columns)
+        data_encoded = encoder.fit_transform(data)
+
+        return data_encoded
+
+    def backward_difference_encoder(self, binary_columns, categorical_columns):
+        """
+        Aplicar Backward Difference Encoding a las columnas categóricas no binarias.
+
+        Args:
+            binary_columns (list): Lista de columnas binarias.
+            categorical_columns (list): Lista de columnas categóricas.
+
+        Returns:
+            DataFrame: El DataFrame con las columnas categóricas codificadas.
+        """
+        data = self.dataset.copy()
+        data = self._map_binary_columns(data, binary_columns)
+        encoder = ce.BackwardDifferenceEncoder(cols=categorical_columns)
+        data_encoded = encoder.fit_transform(data)
+        return data_encoded
+
+    def hashing_encoder(self, binary_columns, categorical_columns, n_components=8):
+        """
+        Aplicar Hashing Encoding a las columnas categóricas no binarias.
+
+        Args:
+            binary_columns (list): Lista de columnas binarias.
+            categorical_columns (list): Lista de columnas categóricas.
+            n_components (int): Número de componentes para el hashing.
+
+        Returns:
+            DataFrame: El DataFrame con las columnas categóricas codificadas.
+        """
+        data = self.dataset.copy()
+        data = self._map_binary_columns(data, binary_columns)
+        encoder = ce.HashingEncoder(cols=categorical_columns, n_components=n_components)
+        data_encoded = encoder.fit_transform(data)
+        return data_encoded
+
+    def target_encoder(self, binary_columns, categorical_columns, target):
+        """
+        Aplicar Target Encoding a las columnas categóricas no binarias.
+
+        Args:
+            binary_columns (list): Lista de columnas binarias.
+            categorical_columns (list): Lista de columnas categóricas.
+            target (Series): Serie que contiene la variable objetivo.
+
+        Returns:
+            DataFrame: El DataFrame con las columnas categóricas codificadas usando Target Encoding.
+        """
+        data = self.dataset.copy()
+        data = self._map_binary_columns(data, binary_columns)
+
+        # Aplicar Target Encoding a las columnas categóricas
+        encoder = ce.TargetEncoder(cols=categorical_columns)
+        data_encoded = encoder.fit_transform(data[categorical_columns], target)
+        data[categorical_columns] = data_encoded
+
+        return data
