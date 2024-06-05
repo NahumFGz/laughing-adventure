@@ -3,11 +3,7 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 
 
-class CategoricalEncoders:
-
-    def __init__(self, dataset):
-        self.dataset = dataset
-
+class AuxiliaryFunctions:
     def _map_binary_columns(self, data, binary_columns):
         """
         Mapear los valores binarios a 1 y 0.
@@ -42,6 +38,12 @@ class CategoricalEncoders:
                     categorical_columns.append(column)
 
         return binary_columns, categorical_columns
+
+
+class CategoricalEncoders(AuxiliaryFunctions):
+
+    def __init__(self, dataset):
+        self.dataset = dataset
 
     def one_hot_encoder(self, binary_columns, categorical_columns):
         """
@@ -177,6 +179,9 @@ class CategoricalEncoders:
         encoder = ce.BackwardDifferenceEncoder(cols=categorical_columns)
         data_encoded = encoder.fit_transform(data)
         return data_encoded
+
+
+class CategoricalEncodersExtra(AuxiliaryFunctions):
 
     def hashing_encoder(self, binary_columns, categorical_columns, n_components=8):
         """
