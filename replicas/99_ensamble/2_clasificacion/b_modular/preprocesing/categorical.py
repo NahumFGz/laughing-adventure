@@ -9,21 +9,33 @@ class Categorical:
         self.dataset = dataset
 
     def _map_binary_columns(self, data, binary_columns):
-        # Mapea los valores binarios "SI" y "NO" a 1 y 0 respectivamente
+        """
+        Mapear los valores binarios a 1 y 0.
+
+        Args:
+            data (DataFrame): El DataFrame de entrada.
+            binary_columns (list): Lista de columnas binarias a mapear.
+
+        Returns:
+            DataFrame: El DataFrame con las columnas binarias mapeadas.
+        """
         binary_map = {"SI": 1, "NO": 0}
         data[binary_columns] = data[binary_columns].applymap(lambda x: binary_map.get(x, x))
         return data
 
     def get_binary_categorical_columns(self):
-        # Identifica y separa las columnas binarias y categóricas en el dataset
+        """
+        Identificar las columnas binarias y categóricas en el dataset.
+
+        Returns:
+            tuple: Dos listas, una con columnas binarias y otra con columnas categóricas.
+        """
         binary_columns = []
         categorical_columns = []
 
         for column in self.dataset.columns:
-            # Asume que todas las categóricas son de tipo 'object'
             if self.dataset[column].dtype == "object":
                 unique_values = self.dataset[column].nunique()
-                # Si la columna tiene solo 2 valores únicos, es binaria
                 if unique_values == 2:
                     binary_columns.append(column)
                 else:
@@ -32,49 +44,77 @@ class Categorical:
         return binary_columns, categorical_columns
 
     def one_hot_encoder(self, binary_columns, categorical_columns):
-        # Crea una copia del dataset original
+        """
+        Aplicar One Hot Encoding a las columnas categóricas no binarias.
+
+        Args:
+            binary_columns (list): Lista de columnas binarias.
+            categorical_columns (list): Lista de columnas categóricas.
+
+        Returns:
+            DataFrame: El DataFrame con las columnas categóricas codificadas.
+        """
         data = self.dataset.copy()
 
-        # Mapea las columnas binarias a valores numéricos
+        # Mapear las columnas binarias a valores numéricos
         data = self._map_binary_columns(data, binary_columns)
 
-        # Prepara el OneHotEncoder para variables categóricas no binarias
-        encoder = OneHotEncoder(drop="first")  # Usa drop='first' para evitar multicolinealidad
+        # Aplicar One Hot Encoding a las columnas categóricas
+        # Usa drop='first' para evitar multicolinealidad
+        encoder = OneHotEncoder(drop="first")
         encoded_data = encoder.fit_transform(data[categorical_columns]).toarray()
 
-        # Crear nombres de columnas para los datos codificados
+        # Obtener nombres de las columnas codificadas
         encoded_columns = encoder.get_feature_names_out(categorical_columns)
         encoded_df = pd.DataFrame(encoded_data, columns=encoded_columns)
 
-        # Concatenar el DataFrame original con el DataFrame de variables codificadas
+        # Concatenar el DataFrame original con las columnas codificadas
         final_data = pd.concat([data.drop(categorical_columns, axis=1), encoded_df], axis=1)
 
         return final_data
 
     def label_encoder(self, binary_columns, categorical_columns):
-        # Crea una copia del dataset original
+        """
+        Aplicar Label Encoding a las columnas categóricas no binarias.
+
+        Args:
+            binary_columns (list): Lista de columnas binarias.
+            categorical_columns (list): Lista de columnas categóricas.
+
+        Returns:
+            DataFrame: El DataFrame con las columnas categóricas codificadas.
+        """
         data = self.dataset.copy()
 
-        # Mapea las columnas binarias a valores numéricos
+        # Mapear las columnas binarias a valores numéricos
         data = self._map_binary_columns(data, binary_columns)
 
-        # Aplica Label Encoding a las columnas categóricas no binarias
+        # Aplicar Label Encoding a las columnas categóricas
         label_encoders = {}
         for col in categorical_columns:
             le = LabelEncoder()
             data[col] = le.fit_transform(data[col])
-            label_encoders[col] = le  # Guarda el encoder para posible uso futuro
+            label_encoders[col] = le
 
         return data
 
     def categorical_encoder(self, binary_columns, categorical_columns):
-        # Crea una copia del dataset original
+        """
+        Aplicar Ordinal Encoding a las columnas categóricas no binarias.
+
+        Args:
+            binary_columns (list): Lista de columnas binarias.
+            categorical_columns (list): Lista de columnas categóricas.
+
+        Returns:
+            DataFrame: El DataFrame con las columnas categóricas codificadas.
+        """
         data = self.dataset.copy()
 
-        # Mapea las columnas binarias a valores numéricos
+        # Mapear las columnas binarias a valores numéricos
         data = self._map_binary_columns(data, binary_columns)
 
-        # Aplica Ordinal Encoding a las columnas categóricas no binarias
+        # Aplicar Ordinal Encoding a las columnas categóricas
         encoder = ce.OrdinalEncoder(cols=categorical_columns)
         data_encoded = encoder.fit_transform(data)
 
