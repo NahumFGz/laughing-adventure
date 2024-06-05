@@ -67,22 +67,21 @@ class Undersampler:
     - 'allknn': Aplica la técnica de eliminación de vecinos más cercanos varias veces.
     """
 
-    def __init__(self, method="random", random_state=42):
-        self.method = method
+    def __init__(self, random_state=42):
         self.random_state = random_state
 
-    def provider(self, X, y):
-        if self.method == "random":
+    def provider(self, method, X, y):
+        if method == "random":
             resampler = RandomUnderSampler(random_state=self.random_state)
-        elif self.method == "nearmiss":
+        elif method == "nearmiss":
             resampler = NearMiss()
-        elif self.method == "tomek":
+        elif method == "tomek":
             resampler = TomekLinks()
-        elif self.method == "centroids":
+        elif method == "centroids":
             resampler = ClusterCentroids(random_state=self.random_state)
-        elif self.method == "enn":
+        elif method == "enn":
             resampler = EditedNearestNeighbours()
-        elif self.method == "allknn":
+        elif method == "allknn":
             resampler = AllKNN()
         else:
             raise ValueError(
