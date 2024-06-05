@@ -18,7 +18,7 @@ from imblearn.under_sampling import (
 
 class Oversampler:
     """
-    Clase para aplicar técnicas de sobremuestreo.
+    Clase que proporciona una interfaz para aplicar técnicas de sobremuestreo.
 
     Métodos:
     - 'random': Sobremuestreo aleatorio.
@@ -29,22 +29,21 @@ class Oversampler:
     - 'kmeanssmote': KMeans Synthetic Minority Over-sampling Technique.
     """
 
-    def __init__(self, method="random", random_state=42):
-        self.method = method
+    def __init__(self, random_state=42):
         self.random_state = random_state
 
-    def resample(self, X, y):
-        if self.method == "random":
+    def provider(self, method, X, y):
+        if method == "random":
             resampler = RandomOverSampler(random_state=self.random_state)
-        elif self.method == "smote":
+        elif method == "smote":
             resampler = SMOTE(random_state=self.random_state)
-        elif self.method == "adasyn":
+        elif method == "adasyn":
             resampler = ADASYN(random_state=self.random_state)
-        elif self.method == "borderlinesmote":
+        elif method == "borderlinesmote":
             resampler = BorderlineSMOTE(random_state=self.random_state)
-        elif self.method == "svmsmote":
+        elif method == "svmsmote":
             resampler = SVMSMOTE(random_state=self.random_state)
-        elif self.method == "kmeanssmote":
+        elif method == "kmeanssmote":
             resampler = KMeansSMOTE(random_state=self.random_state)
         else:
             raise ValueError(
@@ -57,7 +56,8 @@ class Oversampler:
 
 class Undersampler:
     """
-    Clase para aplicar técnicas de submuestreo.
+    Clase que proporciona una interfaz para aplicar técnicas de submuestreo.
+
 
     Métodos:
     - 'random': Submuestreo aleatorio.
@@ -72,7 +72,7 @@ class Undersampler:
         self.method = method
         self.random_state = random_state
 
-    def resample(self, X, y):
+    def provider(self, X, y):
         if self.method == "random":
             resampler = RandomUnderSampler(random_state=self.random_state)
         elif self.method == "nearmiss":
