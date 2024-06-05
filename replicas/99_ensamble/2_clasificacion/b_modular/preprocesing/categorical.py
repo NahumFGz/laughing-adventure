@@ -29,7 +29,6 @@ class Categorical:
         # Eliminar la columna 'Codigo'
 
         data = self.dataset.copy()
-        data.drop("Codigo", axis=1, inplace=True)
 
         # Identificar las columnas binarias y mapear los valores a numéricos
         binary_map = {"SI": 1, "NO": 0}
@@ -54,9 +53,6 @@ class Categorical:
     def label_encoder(self, binary_columns):
         data = self.dataset.copy()
 
-        # Eliminar la columna 'Codigo'
-        data.drop("Codigo", axis=1, inplace=True)
-
         # Identificar las columnas binarias y mapear los valores a numéricos
         binary_map = {"SI": 1, "NO": 0}
         data[binary_columns] = data[binary_columns].applymap(lambda x: binary_map.get(x, x))
@@ -80,9 +76,6 @@ class Categorical:
     def categorical_encoder(self, binary_columns):
         # Cargar los datos
         data = self.dataset.copy()
-
-        # Eliminar la columna 'Codigo'
-        data.drop("Codigo", axis=1, inplace=True)
 
         # Identificar las columnas binarias y mapear los valores a numéricos
         binary_map = {"SI": 1, "NO": 0}
