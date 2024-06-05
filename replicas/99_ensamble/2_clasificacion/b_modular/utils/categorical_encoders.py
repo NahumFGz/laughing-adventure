@@ -71,7 +71,7 @@ class CategoricalEncoders(AuxiliaryFunctions):
         elif method == "OneHotEncoder":
             return self.one_hot_encoder(binary_columns, categorical_columns)
         elif method == "OrdinalEncoder":
-            return self.categorical_encoder(binary_columns, categorical_columns)
+            return self.ordinal_encoder(binary_columns, categorical_columns)
         elif method == "FrequencyEncoder":
             return self.frequency_encoder(binary_columns, categorical_columns)
         elif method == "BinaryEncoder":
@@ -140,7 +140,7 @@ class CategoricalEncoders(AuxiliaryFunctions):
 
         return final_data
 
-    def categorical_encoder(self, binary_columns, categorical_columns):
+    def ordinal_encoder(self, binary_columns, categorical_columns):
         """
         Aplicar Ordinal Encoding a las columnas categóricas no binarias.
 
