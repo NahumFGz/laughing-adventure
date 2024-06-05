@@ -45,6 +45,71 @@ class CategoricalEncoders(AuxiliaryFunctions):
     def __init__(self, dataset):
         self.dataset = dataset
 
+    def provider(self, binary_columns, categorical_columns, method):
+        """
+        Esta función aplica el método de codificación especificado a las columnas binarias y categóricas.
+
+        Args:
+            binary_columns (list): Lista de columnas binarias.
+            categorical_columns (list): Lista de columnas categóricas.
+            method (str): El método de codificación a aplicar. Debe ser uno de los siguientes:
+                - 'LabelEncoder'
+                - 'OneHotEncoder'
+                - 'OrdinalEncoder'
+                - 'FrequencyEncoder'
+                - 'BinaryEncoder'
+                - 'BackwardDifferenceEncoder'
+
+        Returns:
+            DataFrame: El DataFrame con las columnas codificadas.
+
+        Raises:
+            ValueError: Si el método proporcionado no es uno de los esperados.
+        """
+        if method == "LabelEncoder":
+            return self.label_encoder(binary_columns, categorical_columns)
+        elif method == "OneHotEncoder":
+            return self.one_hot_encoder(binary_columns, categorical_columns)
+        elif method == "OrdinalEncoder":
+            return self.categorical_encoder(binary_columns, categorical_columns)
+        elif method == "FrequencyEncoder":
+            return self.frequency_encoder(binary_columns, categorical_columns)
+        elif method == "BinaryEncoder":
+            return self.binary_encoder(binary_columns, categorical_columns)
+        elif method == "BackwardDifferenceEncoder":
+            return self.backward_difference_encoder(binary_columns, categorical_columns)
+        else:
+            raise ValueError(
+                f'Invalid method: {method}. Expected one of ["LabelEncoder", "OneHotEncoder", "OrdinalEncoder", "FrequencyEncoder", "BinaryEncoder", "BackwardDifferenceEncoder"].'
+            )
+
+        return self
+
+    def label_encoder(self, binary_columns, categorical_columns):
+        """
+        Aplicar Label Encoding a las columnas categóricas no binarias.
+
+        Args:
+            binary_columns (list): Lista de columnas binarias.
+            categorical_columns (list): Lista de columnas categóricas.
+
+        Returns:
+            DataFrame: El DataFrame con las columnas categóricas codificadas.
+        """
+        data = self.dataset.copy()
+
+        # Mapear las columnas binarias a valores numéricos
+        data = self._map_binary_columns(data, binary_columns)
+
+        # Aplicar Label Encoding a las columnas categóricas
+        label_encoders = {}
+        for col in categorical_columns:
+            le = LabelEncoder()
+            data[col] = le.fit_transform(data[col])
+            label_encoders[col] = le
+
+        return data
+
     def one_hot_encoder(self, binary_columns, categorical_columns):
         """
         Aplicar One Hot Encoding a las columnas categóricas no binarias.
@@ -74,31 +139,6 @@ class CategoricalEncoders(AuxiliaryFunctions):
         final_data = pd.concat([data.drop(categorical_columns, axis=1), encoded_df], axis=1)
 
         return final_data
-
-    def label_encoder(self, binary_columns, categorical_columns):
-        """
-        Aplicar Label Encoding a las columnas categóricas no binarias.
-
-        Args:
-            binary_columns (list): Lista de columnas binarias.
-            categorical_columns (list): Lista de columnas categóricas.
-
-        Returns:
-            DataFrame: El DataFrame con las columnas categóricas codificadas.
-        """
-        data = self.dataset.copy()
-
-        # Mapear las columnas binarias a valores numéricos
-        data = self._map_binary_columns(data, binary_columns)
-
-        # Aplicar Label Encoding a las columnas categóricas
-        label_encoders = {}
-        for col in categorical_columns:
-            le = LabelEncoder()
-            data[col] = le.fit_transform(data[col])
-            label_encoders[col] = le
-
-        return data
 
     def categorical_encoder(self, binary_columns, categorical_columns):
         """
