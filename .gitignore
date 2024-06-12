@@ -7,6 +7,7 @@ Original/
 # Ignorar .csv
 data_selec_entre.csv
 data_selec_test.csv
+~$Modelo Contactabilidad.pptx
 
 # Ambientes Virtuales de Python
 my_env/
