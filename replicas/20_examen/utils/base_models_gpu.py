@@ -1,6 +1,8 @@
 from catboost import CatBoostClassifier
-from cuml.ensemble import GradientBoostingClassifier as cuMLGradientBoostingClassifier
 from cuml.ensemble import RandomForestClassifier as cuMLRandomForestClassifier
+from cuml.experimental.ensemble import (
+    HistGradientBoostingClassifier as cuMLHistGradientBoostingClassifier,
+)
 from cuml.linear_model import LogisticRegression as cuMLLogisticRegression
 from cuml.naive_bayes import GaussianNB as cuMLGaussianNB
 from cuml.neighbors import KNeighborsClassifier as cuMLKNeighborsClassifier
@@ -19,7 +21,7 @@ class BaseModels:
     - 'logistic_regression': Regresión Logística.
     - 'decision_tree': Árbol de Decisión.
     - 'random_forest': Bosque Aleatorio.
-    - 'gradient_boosting': Gradient Boosting.
+    - 'hist_gradient_boosting': Gradient Boosting basado en histogramas.
     - 'svm': Support Vector Machine.
     - 'knn': K-Nearest Neighbors.
     - 'naive_bayes': Naive Bayes.
@@ -34,27 +36,16 @@ class BaseModels:
 
     def provider(self, method):
         """
-        Esta función devuelve un modelo de clasificación basado en el método especificado.
+        Devuelve un modelo de clasificación basado en el método especificado.
 
         Args:
-            method (str): El método de clasificación a utilizar. Debe ser uno de los siguientes:
-                - 'logistic_regression'
-                - 'decision_tree'
-                - 'random_forest'
-                - 'gradient_boosting'
-                - 'svm'
-                - 'knn'
-                - 'naive_bayes'
-                - 'mlp'
-                - 'lgbm'
-                - 'catboost'
-                - 'xgboost'
+            method (str): Método de clasificación.
 
         Returns:
-            object: El modelo de clasificación seleccionado.
+            object: Modelo de clasificación seleccionado.
 
         Raises:
-            ValueError: Si el método proporcionado no es uno de los esperados.
+            ValueError: Si el método no es uno de los esperados.
         """
         if method == "logistic_regression":
             return cuMLLogisticRegression(random_state=self.random_state)
@@ -62,8 +53,8 @@ class BaseModels:
             return cuMLDecisionTreeClassifier(random_state=self.random_state)
         elif method == "random_forest":
             return cuMLRandomForestClassifier(random_state=self.random_state)
-        elif method == "gradient_boosting":
-            return cuMLGradientBoostingClassifier(random_state=self.random_state)
+        elif method == "hist_gradient_boosting":
+            return cuMLHistGradientBoostingClassifier(random_state=self.random_state)
         elif method == "svm":
             return cuMLSVC(probability=True, random_state=self.random_state)
         elif method == "knn":
@@ -79,6 +70,4 @@ class BaseModels:
         elif method == "xgboost":
             return XGBClassifier(random_state=self.random_state)
         else:
-            raise ValueError(
-                "Method should be 'logistic_regression', 'decision_tree', 'random_forest', 'gradient_boosting', 'svm', 'knn', 'naive_bayes', 'mlp', 'lgbm', 'catboost', or 'xgboost'"
-            )
+            raise ValueError("Invalid classification method specified.")
