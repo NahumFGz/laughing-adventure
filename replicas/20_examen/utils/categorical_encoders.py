@@ -15,8 +15,11 @@ class AuxiliaryFunctions:
         Returns:
             DataFrame: El DataFrame con las columnas binarias mapeadas.
         """
-        binary_map = {"SI": 1, "NO": 0}
-        data[binary_columns] = data[binary_columns].applymap(lambda x: binary_map.get(x, x))
+        for column in binary_columns:
+            unique_values = data[column].unique()
+            if len(unique_values) == 2:
+                data[column] = data[column].map({unique_values[0]: 1, unique_values[1]: 0})
+
         return data
 
     def get_binary_categorical_columns(self):
