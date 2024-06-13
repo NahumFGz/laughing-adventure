@@ -14,12 +14,11 @@ class NumericalScalers:
     def __init__(self, dataset):
         self.dataset = dataset
 
-    def scale(self, numerical_columns, method):
+    def provider(self, method):
         """
-        Esta función aplica el método de escalado especificado a las columnas numéricas.
+        Esta función aplica el método de escalado especificado a todas las columnas del dataset.
 
         Args:
-            numerical_columns (list): Lista de columnas numéricas.
             method (str): El método de escalado a aplicar. Debe ser uno de los siguientes:
                 - 'StandardScaler'
                 - 'MinMaxScaler'
@@ -35,108 +34,90 @@ class NumericalScalers:
             ValueError: Si el método proporcionado no es uno de los esperados.
         """
         if method == "StandardScaler":
-            return self.standard_scaler(numerical_columns)
+            return self.standard_scaler()
         elif method == "MinMaxScaler":
-            return self.min_max_scaler(numerical_columns)
+            return self.min_max_scaler()
         elif method == "MaxAbsScaler":
-            return self.max_abs_scaler(numerical_columns)
+            return self.max_abs_scaler()
         elif method == "RobustScaler":
-            return self.robust_scaler(numerical_columns)
+            return self.robust_scaler()
         elif method == "Normalizer":
-            return self.normalizer(numerical_columns)
+            return self.normalizer()
         elif method == "PowerTransformer":
-            return self.power_transformer(numerical_columns)
+            return self.power_transformer()
         else:
             raise ValueError(
                 f'Invalid method: {method}. Expected one of ["StandardScaler", "MinMaxScaler", "MaxAbsScaler", "RobustScaler", "Normalizer", "PowerTransformer"].'
             )
 
-    def standard_scaler(self, numerical_columns):
+    def standard_scaler(self):
         """
-        Aplicar Standard Scaling a las columnas numéricas.
-
-        Args:
-            numerical_columns (list): Lista de columnas numéricas.
+        Aplicar Standard Scaling a todas las columnas del dataset.
 
         Returns:
-            DataFrame: El DataFrame con las columnas numéricas escaladas.
+            DataFrame: El DataFrame con las columnas escaladas.
         """
         data = self.dataset.copy()
         scaler = StandardScaler()
-        data[numerical_columns] = scaler.fit_transform(data[numerical_columns])
+        data[:] = scaler.fit_transform(data)
         return data
 
-    def min_max_scaler(self, numerical_columns):
+    def min_max_scaler(self):
         """
-        Aplicar Min-Max Scaling a las columnas numéricas.
-
-        Args:
-            numerical_columns (list): Lista de columnas numéricas.
+        Aplicar Min-Max Scaling a todas las columnas del dataset.
 
         Returns:
-            DataFrame: El DataFrame con las columnas numéricas escaladas.
+            DataFrame: El DataFrame con las columnas escaladas.
         """
         data = self.dataset.copy()
         scaler = MinMaxScaler()
-        data[numerical_columns] = scaler.fit_transform(data[numerical_columns])
+        data[:] = scaler.fit_transform(data)
         return data
 
-    def max_abs_scaler(self, numerical_columns):
+    def max_abs_scaler(self):
         """
-        Aplicar Max-Abs Scaling a las columnas numéricas.
-
-        Args:
-            numerical_columns (list): Lista de columnas numéricas.
+        Aplicar Max-Abs Scaling a todas las columnas del dataset.
 
         Returns:
-            DataFrame: El DataFrame con las columnas numéricas escaladas.
+            DataFrame: El DataFrame con las columnas escaladas.
         """
         data = self.dataset.copy()
         scaler = MaxAbsScaler()
-        data[numerical_columns] = scaler.fit_transform(data[numerical_columns])
+        data[:] = scaler.fit_transform(data)
         return data
 
-    def robust_scaler(self, numerical_columns):
+    def robust_scaler(self):
         """
-        Aplicar Robust Scaling a las columnas numéricas.
-
-        Args:
-            numerical_columns (list): Lista de columnas numéricas.
+        Aplicar Robust Scaling a todas las columnas del dataset.
 
         Returns:
-            DataFrame: El DataFrame con las columnas numéricas escaladas.
+            DataFrame: El DataFrame con las columnas escaladas.
         """
         data = self.dataset.copy()
         scaler = RobustScaler()
-        data[numerical_columns] = scaler.fit_transform(data[numerical_columns])
+        data[:] = scaler.fit_transform(data)
         return data
 
-    def normalizer(self, numerical_columns):
+    def normalizer(self):
         """
-        Aplicar Normalizer a las columnas numéricas.
-
-        Args:
-            numerical_columns (list): Lista de columnas numéricas.
+        Aplicar Normalizer a todas las columnas del dataset.
 
         Returns:
-            DataFrame: El DataFrame con las columnas numéricas normalizadas.
+            DataFrame: El DataFrame con las columnas normalizadas.
         """
         data = self.dataset.copy()
         scaler = Normalizer()
-        data[numerical_columns] = scaler.fit_transform(data[numerical_columns])
+        data[:] = scaler.fit_transform(data)
         return data
 
-    def power_transformer(self, numerical_columns):
+    def power_transformer(self):
         """
-        Aplicar Power Transformer a las columnas numéricas.
-
-        Args:
-            numerical_columns (list): Lista de columnas numéricas.
+        Aplicar Power Transformer a todas las columnas del dataset.
 
         Returns:
-            DataFrame: El DataFrame con las columnas numéricas transformadas.
+            DataFrame: El DataFrame con las columnas transformadas.
         """
         data = self.dataset.copy()
         scaler = PowerTransformer()
-        data[numerical_columns] = scaler.fit_transform(data[numerical_columns])
+        data[:] = scaler.fit_transform(data)
         return data
