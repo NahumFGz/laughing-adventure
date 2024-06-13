@@ -11,7 +11,7 @@ from lightgbm import LGBMClassifier
 from xgboost import XGBClassifier
 
 
-class BaseModelsGpu:
+class BaseModels:
     """
     Clase para seleccionar diferentes modelos de clasificación.
 
