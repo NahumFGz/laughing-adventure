@@ -130,13 +130,12 @@ class CategoricalEncoders(AuxiliaryFunctions):
         data = self._map_binary_columns(data, binary_columns)
 
         # Aplicar One Hot Encoding a las columnas categóricas
-        # Usa drop='first' para evitar multicolinealidad
-        encoder = OneHotEncoder(drop="first")
-        encoded_data = encoder.fit_transform(data[categorical_columns]).toarray()
+        encoder = OneHotEncoder(drop="first", sparse_output=False)
+        encoded_data = encoder.fit_transform(data[categorical_columns])
 
         # Obtener nombres de las columnas codificadas
         encoded_columns = encoder.get_feature_names_out(categorical_columns)
-        encoded_df = pd.DataFrame(encoded_data, columns=encoded_columns)
+        encoded_df = pd.DataFrame(encoded_data, columns=encoded_columns, index=data.index)
 
         # Concatenar el DataFrame original con las columnas codificadas
         final_data = pd.concat([data.drop(categorical_columns, axis=1), encoded_df], axis=1)
