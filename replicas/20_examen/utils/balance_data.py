@@ -39,7 +39,7 @@ class Oversampler:
             resampler = SMOTE(random_state=self.random_state)
         elif method == "ADASYN":
             resampler = ADASYN(random_state=self.random_state)
-        elif method == "borderlinesmote":
+        elif method == "BorderlineSMOTE":
             resampler = BorderlineSMOTE(random_state=self.random_state)
         elif method == "SVMSMOTE":
             resampler = SVMSMOTE(random_state=self.random_state)
